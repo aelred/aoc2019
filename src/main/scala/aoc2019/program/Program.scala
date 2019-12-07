@@ -4,12 +4,12 @@ import scala.collection.mutable
 
 class Program(initialMemory: Seq[Int]) {
 
-  def execute(input: Int): Seq[Int] = {
+  def execute(input: Int*): Seq[Int] = {
     val memory = initialMemory.toBuffer
-    execute(memory, Some(input))
+    execute(memory, input.iterator)
   }
 
-  def execute(noun: Int, verb: Int): Int = {
+  def executeWithNounAndVerb(noun: Int, verb: Int): Int = {
     val memory = initialMemory.toBuffer
     memory(1) = noun
     memory(2) = verb
@@ -19,7 +19,7 @@ class Program(initialMemory: Seq[Int]) {
     memory(0)
   }
 
-  private def execute(memory: mutable.Seq[Int], input: Option[Int] = None): Seq[Int] = {
+  private def execute(memory: mutable.Seq[Int], input: Iterator[Int] = Iterator.empty): Seq[Int] = {
     var instructionPointer = 0
     val outputs: mutable.Buffer[Int] = mutable.Buffer()
 
@@ -49,7 +49,7 @@ class Program(initialMemory: Seq[Int]) {
       opCode match {
         case Add()         => write(read() + read())
         case Multiply()    => write(read() * read())
-        case Input()       => write(input.get)
+        case Input()       => write(input.next())
         case Output()      => outputs.append(read())
         case JumpIfTrue()  => if (read() != 0) instructionPointer = read() else read()
         case JumpIfFalse() => if (read() == 0) instructionPointer = read() else read()

@@ -11,9 +11,7 @@ object Part2 extends Solution[Program] {
     val matchingParams = for {
       noun <- 0 to 100
       verb <- 0 to 100
-      x = program.execute(noun, verb)
-      _ = println(s"$noun $verb = $x")
-      if program.execute(noun, verb) == 19690720
+      if program.executeWithNounAndVerb(noun, verb) == 19690720
     } yield 100 * noun + verb
 
     matchingParams(0)

@@ -5,5 +5,5 @@ import aoc2019.program.Program
 
 object Part1 extends Solution[Program] {
 
-  def solution: Int = line.execute(12, 2)
+  def solution: Int = line.executeWithNounAndVerb(12, 2)
 }
