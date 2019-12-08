@@ -9,6 +9,8 @@ trait FromString[T] {
 }
 
 object FromString {
+  implicit val string: FromString[String] = string => string
+
   implicit val int: FromString[Int] = _.toInt
 
   implicit val range: FromString[Range] = { string =>
