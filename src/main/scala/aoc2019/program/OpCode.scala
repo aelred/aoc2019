@@ -9,4 +9,5 @@ case class JumpIfTrue() extends OpCode
 case class JumpIfFalse() extends OpCode
 case class LessThan() extends OpCode
 case class Equals() extends OpCode
+case class AdjustRelativeBase() extends OpCode
 case class Halt() extends OpCode

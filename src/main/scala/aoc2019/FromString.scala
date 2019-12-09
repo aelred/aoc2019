@@ -10,8 +10,8 @@ trait FromString[T] {
 
 object FromString {
   implicit val string: FromString[String] = string => string
-
   implicit val int: FromString[Int] = _.toInt
+  implicit val long: FromString[Long] = _.toLong
 
   implicit val range: FromString[Range] = { string =>
     val nums = string.split('-').map(int(_))
@@ -23,5 +23,5 @@ object FromString {
     string.split(',').toSeq.map(fromString(_))
   }
 
-  implicit val program: FromString[Program] = csv[Int].map(new Program(_))
+  implicit val program: FromString[Program] = csv[Long].map(new Program(_))
 }

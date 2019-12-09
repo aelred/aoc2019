@@ -2,20 +2,20 @@ package aoc2019.program
 
 import scala.collection.mutable
 
-class Program(initialMemory: Seq[Int]) {
+class Program(initialMemory: Seq[Long]) {
 
-  def execute(input: Int*): Seq[Int] = {
+  def execute(input: Long*): Seq[Long] = {
     val memory = initialMemory.toBuffer
 
     val inputIterator = input.iterator
-    val outputs = mutable.Buffer[Int]()
+    val outputs = mutable.Buffer[Long]()
 
     execute(memory, inputIterator.next, outputs.append(_))
 
     outputs.toSeq
   }
 
-  def executeWithNounAndVerb(noun: Int, verb: Int): Int = {
+  def executeWithNounAndVerb(noun: Long, verb: Long): Long = {
     val memory = initialMemory.toBuffer
     memory(1) = noun
     memory(2) = verb
@@ -25,11 +25,11 @@ class Program(initialMemory: Seq[Int]) {
     memory(0)
   }
 
-  def start(input: () => Int): Execution = {
+  def start(input: () => Long): Execution = {
     Execution(mutable.Seq.from(initialMemory), input)
   }
 
-  private def execute(memory: mutable.Seq[Int], input: () => Int, output: Int => Unit): Unit = {
+  private def execute(memory: mutable.Seq[Long], input: () => Long, output: Long => Unit): Unit = {
     val execution = Execution(memory, input)
 
     while (true) {
