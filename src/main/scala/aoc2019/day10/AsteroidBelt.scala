@@ -23,6 +23,12 @@ class AsteroidBelt(val asteroids: Set[Pos]) {
 
     true
   }
+
+  def visibleAsteroids(pos: Pos): Set[Pos] = {
+    asteroids filter { _ != pos } filter { canSee(pos, _) }
+  }
+
+  def without(toRemove: Set[Pos]): AsteroidBelt = new AsteroidBelt(asteroids &~ toRemove)
 }
 
 object AsteroidBelt {
