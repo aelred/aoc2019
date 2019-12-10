@@ -5,22 +5,22 @@ import aoc2019.program.Program
 
 object Part2 extends Solution[Program] {
 
-  def solution: Int = {
+  def solution: Long = {
     val program = line
 
-    val allPhaseSettings = (5 to 9).permutations
+    val allPhaseSettings = (5L to 9L).permutations
 
     val outputs = allPhaseSettings.map(trySetting(program, _))
 
     outputs.max
   }
 
-  private def trySetting(program: Program, phaseSettings: Seq[Int]): Int = {
+  private def trySetting(program: Program, phaseSettings: Seq[Long]): Long = {
     val amplifiers = phaseSettings.map(new Amplifier(program, _))
 
     val amplifiersLoop = LazyList.continually(amplifiers).flatten
 
-    var input = 0
+    var input = 0L
 
     for (amplifier <- amplifiersLoop) {
       amplifier.run(input) match {
