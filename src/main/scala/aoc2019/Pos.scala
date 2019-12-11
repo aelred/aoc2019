@@ -1,4 +1,4 @@
-package aoc2019.day10
+package aoc2019
 
 case class Pos(x: Int, y: Int) {
   def +(pos: Pos): Pos = Pos(x + pos.x, y + pos.y)

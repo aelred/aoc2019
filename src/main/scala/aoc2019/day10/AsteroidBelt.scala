@@ -1,5 +1,7 @@
 package aoc2019.day10
 
+import aoc2019.Pos
+
 class AsteroidBelt(val asteroids: Set[Pos]) {
 
   def canSee(pos1: Pos, pos2: Pos): Boolean = {

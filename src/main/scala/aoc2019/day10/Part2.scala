@@ -1,6 +1,6 @@
 package aoc2019.day10
 
-import aoc2019.Solution
+import aoc2019.{Pos, Solution}
 
 import scala.collection.mutable
 

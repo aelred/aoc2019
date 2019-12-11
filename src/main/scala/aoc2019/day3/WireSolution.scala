@@ -1,6 +1,6 @@
 package aoc2019.day3
 
-import aoc2019.{FromString, Solution}
+import aoc2019._
 
 import scala.collection.mutable
 
@@ -8,7 +8,7 @@ abstract class WireSolution extends Solution[Seq[WirePath]]()(FromString.csv(Wir
 
   protected def visitedLocations(paths: Seq[WirePath]): Set[Visit] = {
     val locations = mutable.Set[Visit]()
-    var location = (0, 0)
+    var location = Pos(0, 0)
     var steps = 0
 
     for (path <- paths) {

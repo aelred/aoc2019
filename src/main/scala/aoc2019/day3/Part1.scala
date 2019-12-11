@@ -1,6 +1,6 @@
 package aoc2019.day3
 
-import aoc2019.FromString
+import aoc2019.Pos
 
 object Part1 extends WireSolution {
 
@@ -10,6 +10,6 @@ object Part1 extends WireSolution {
 
     val intersections = locations1 & locations2
 
-    intersections.toSeq.map{case (x, y) => x + y}.min
+    intersections.toSeq.map{case Pos(x, y) => x + y}.min
   }
 }

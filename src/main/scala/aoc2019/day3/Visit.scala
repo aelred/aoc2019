@@ -1,3 +1,5 @@
 package aoc2019.day3
 
-case class Visit(location: (Int, Int), steps: Int)
+import aoc2019.Pos
+
+case class Visit(location: Pos, steps: Int)
