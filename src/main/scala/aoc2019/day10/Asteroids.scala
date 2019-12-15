@@ -1,9 +1,11 @@
 package aoc2019.day10
 
-import aoc2019.FromString
+import aoc2019.parser.Parser
+import aoc2019.parser.Parser.lit
 
 case class Asteroids(asteroids: Seq[Boolean])
 
 object Asteroids {
-  implicit val fromString: FromString[Asteroids] = str => Asteroids(str.toSeq.map(_ == '#'))
+  implicit val parser: Parser[Asteroids] =
+    (lit("#").map(_ => true) | lit(".").map(_ => false)).repeat.map(Asteroids(_))
 }

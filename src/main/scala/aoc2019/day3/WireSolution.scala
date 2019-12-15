@@ -1,10 +1,13 @@
 package aoc2019.day3
 
 import aoc2019._
+import aoc2019.parser.Parser
+import aoc2019.parser.Parser.{int, lit}
+import WireSolution.parser
 
 import scala.collection.mutable
 
-abstract class WireSolution extends Solution[Seq[WirePath]]()(FromString.csv(WireSolution.fromString(FromString.int))) {
+abstract class WireSolution extends Solution[Seq[WirePath]] {
 
   protected def visitedLocations(paths: Seq[WirePath]): Set[Visit] = {
     val locations = mutable.Set[Visit]()
@@ -25,18 +28,11 @@ abstract class WireSolution extends Solution[Seq[WirePath]]()(FromString.csv(Wir
 
 object WireSolution {
 
-  implicit def fromString(implicit parseInt: FromString[Int]): FromString[WirePath] = value => {
-    val (dirStr, distStr) = value.splitAt(1)
+  val direction: Parser[Direction] =
+    lit("U").map(_ => Up   ()) |
+    lit("D").map(_ => Down ()) |
+    lit("L").map(_ => Left ()) |
+    lit("R").map(_ => Right())
 
-    val direction = dirStr match {
-      case "U" => Up()
-      case "D" => Down()
-      case "L" => Left()
-      case "R" => Right()
-    }
-
-    val distance = parseInt(distStr)
-
-    WirePath(direction, distance)
-  }
+  implicit val parser: Parser[Seq[WirePath]] = (direction + int).map(WirePath.tupled).split(lit(","))
 }
