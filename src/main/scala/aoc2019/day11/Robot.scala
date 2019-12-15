@@ -1,7 +1,7 @@
 package aoc2019.day11
 
 import aoc2019.program.Program
-import aoc2019.{Direction, Pos, Up}
+import aoc2019.{Direction, Vec2, Up}
 
 import scala.collection.mutable
 
@@ -13,11 +13,11 @@ object Robot {
   val TurnLeft = 0L
   val TurnRight = 1L
 
-  def run(program: Program): Map[Pos, Long] = {
-    var robotPos = Pos(0, 0)
+  def run(program: Program): Map[Vec2, Long] = {
+    var robotPos = Vec2(0, 0)
     var robotDir: Direction = Up()
 
-    val hull = mutable.Map[Pos, Long]().withDefaultValue(Black)
+    val hull = mutable.Map[Vec2, Long]().withDefaultValue(Black)
     hull(robotPos) = White
 
     val execution = program.start(() => hull(robotPos))

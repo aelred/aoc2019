@@ -11,7 +11,7 @@ abstract class WireSolution extends Solution[Seq[WirePath]] {
 
   protected def visitedLocations(paths: Seq[WirePath]): Set[Visit] = {
     val locations = mutable.Set[Visit]()
-    var location = Pos(0, 0)
+    var location = Vec2(0, 0)
     var steps = 0
 
     for (path <- paths) {

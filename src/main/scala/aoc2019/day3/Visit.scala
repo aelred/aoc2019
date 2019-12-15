@@ -1,5 +1,5 @@
 package aoc2019.day3
 
-import aoc2019.Pos
+import aoc2019.Vec2
 
-case class Visit(location: Pos, steps: Int)
+case class Visit(location: Vec2, steps: Int)

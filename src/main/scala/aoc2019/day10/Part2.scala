@@ -1,13 +1,13 @@
 package aoc2019.day10
 
-import aoc2019.{Pos, Solution}
+import aoc2019.{Vec2, Solution}
 
 import scala.collection.mutable
 
 object Part2 extends Solution[Asteroids] {
   def solution: Int = {
     var belt = AsteroidBelt(input)
-    val asteroidsDestroyed = mutable.Buffer[Pos]()
+    val asteroidsDestroyed = mutable.Buffer[Vec2]()
 
     val station = belt.asteroids.maxBy(belt.visibleAsteroids(_).size)
 

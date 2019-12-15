@@ -1,10 +1,10 @@
 package aoc2019.day10
 
-import aoc2019.Pos
+import aoc2019.Vec2
 
-class AsteroidBelt(val asteroids: Set[Pos]) {
+class AsteroidBelt(val asteroids: Set[Vec2]) {
 
-  def canSee(pos1: Pos, pos2: Pos): Boolean = {
+  def canSee(pos1: Vec2, pos2: Vec2): Boolean = {
     val diff = pos2 - pos1
 
     val range = 1 to diff.x.abs.max(diff.y.abs)
@@ -26,11 +26,11 @@ class AsteroidBelt(val asteroids: Set[Pos]) {
     true
   }
 
-  def visibleAsteroids(pos: Pos): Set[Pos] = {
+  def visibleAsteroids(pos: Vec2): Set[Vec2] = {
     asteroids filter { _ != pos } filter { canSee(pos, _) }
   }
 
-  def without(toRemove: Set[Pos]): AsteroidBelt = new AsteroidBelt(asteroids &~ toRemove)
+  def without(toRemove: Set[Vec2]): AsteroidBelt = new AsteroidBelt(asteroids &~ toRemove)
 }
 
 object AsteroidBelt {
@@ -41,7 +41,7 @@ object AsteroidBelt {
       (row, y) <- table.zipWithIndex
       (cell, x) <- row.zipWithIndex
       if cell
-    } yield Pos(x, y)
+    } yield Vec2(x, y)
 
     new AsteroidBelt(positions.toSet)
   }

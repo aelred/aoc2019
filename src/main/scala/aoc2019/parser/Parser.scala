@@ -61,9 +61,9 @@ object Parser {
 
   implicit val string: Parser[String] = in => Right(ParseResult(in, ""))
 
-  implicit val int: Parser[Int] = regex("[0-9]".r).map(_.toInt)
+  implicit val int: Parser[Int] = regex("[+-]?[0-9]+".r).map(_.toInt)
 
-  implicit val long: Parser[Long] = regex("[0-9]".r).map(_.toLong)
+  implicit val long: Parser[Long] = regex("[+-]?[0-9]+".r).map(_.toLong)
 
   implicit val range: Parser[Range] = (int + lit("-") + int) map { case left + _ + right => left to right }
 
