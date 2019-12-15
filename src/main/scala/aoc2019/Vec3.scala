@@ -1,8 +1,9 @@
 package aoc2019
 
 import aoc2019.parser.Parser
-import aoc2019.parser.+
-import aoc2019.parser.Parser.{int, lit}
+import aoc2019.parser.Parser.Literal
+import aoc2019.parser.~
+import aoc2019.parser.Parser.int
 
 case class Vec3(x: Int, y: Int, z: Int) {
   def +(vec: Vec3): Vec3 = Vec3(x + vec.x, y + vec.y, z + vec.z)
@@ -15,7 +16,7 @@ case class Vec3(x: Int, y: Int, z: Int) {
 
 object Vec3 {
   implicit val parser: Parser[Vec3] =
-    (lit("<x=") + int + lit(", y=") + int + lit(", z=") + int + lit(">")) map {
-      case _ + x + _ + y + _ + z + _ => Vec3(x, y, z)
+    ("<x=" ~> int) ~ (", y=" ~> int) ~ (", z=" ~> int) <~ ">" |-> {
+      case x ~ y ~ z => Vec3(x, y, z)
     }
 }

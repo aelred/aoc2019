@@ -1,9 +1,9 @@
 package aoc2019.day3
 
 import aoc2019._
+import aoc2019.day3.WireSolution.parser
 import aoc2019.parser.Parser
-import aoc2019.parser.Parser.{int, lit}
-import WireSolution.parser
+import aoc2019.parser.Parser.{Literal, int}
 
 import scala.collection.mutable
 
@@ -29,10 +29,10 @@ abstract class WireSolution extends Solution[Seq[WirePath]] {
 object WireSolution {
 
   val direction: Parser[Direction] =
-    lit("U").map(_ => Up   ()) |
-    lit("D").map(_ => Down ()) |
-    lit("L").map(_ => Left ()) |
-    lit("R").map(_ => Right())
+    "U" |-> { _ => Up   ()} |
+    "D" |-> { _ => Down ()} |
+    "L" |-> { _ => Left ()} |
+    "R" |-> { _ => Right()}
 
-  implicit val parser: Parser[Seq[WirePath]] = (direction + int).map(WirePath.tupled).split(lit(","))
+  implicit val parser: Parser[Seq[WirePath]] =  (direction ~ int).map(WirePath.tupled).split(",")
 }
