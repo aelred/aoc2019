@@ -34,5 +34,5 @@ object WireSolution {
     "L" |-> { _ => Left ()} |
     "R" |-> { _ => Right()}
 
-  implicit val parser: Parser[Seq[WirePath]] =  (direction ~ int).map(WirePath.tupled).split(",")
+  implicit val parser: Parser[Seq[WirePath]] =  (direction ~ int).map(WirePath.tupled).separatedBy(",")
 }

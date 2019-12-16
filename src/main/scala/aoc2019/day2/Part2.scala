@@ -11,7 +11,7 @@ object Part2 extends Solution[Program] {
     val matchingParams = for {
       noun <- 0 to 100
       verb <- 0 to 100
-      if program.executeWithNounAndVerb(noun, verb) == 19690720
+      if program.withMemory(1 -> noun, 2 -> verb).executeAndReturnMemory(0) == 19690720
     } yield 100 * noun + verb
 
     matchingParams(0)

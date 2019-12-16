@@ -15,14 +15,20 @@ class Program(initialMemory: Seq[Long]) {
     outputs.toSeq
   }
 
-  def executeWithNounAndVerb(noun: Long, verb: Long): Long = {
+  def withMemory(setMemory: (Int, Long)*): Program = {
     val memory = initialMemory.toBuffer
-    memory(1) = noun
-    memory(2) = verb
 
+    for ((address, value) <- setMemory) {
+      memory(address) = value
+    }
+
+    new Program(memory.toSeq)
+  }
+
+  def executeAndReturnMemory: Seq[Long] = {
+    val memory = initialMemory.toBuffer
     execute(memory, input = () => throw new Exception("No input"), output = _ => {})
-
-    memory(0)
+    memory.toSeq
   }
 
   def start(input: () => Long): Execution = {

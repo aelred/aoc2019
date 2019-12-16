@@ -1,20 +1,19 @@
 package aoc2019.parser
 
-import aoc2019.parser.Parser.nothing
+import aoc2019.parser.Parser.{RepeatParser, nothing}
 import aoc2019.program.Program
 
 import scala.Option.when
+import scala.collection.mutable
 import scala.util.matching.Regex
 
 trait Parser[+T] {
-  def apply(input: String): Either[String, ParseResult[T]] = parse(input).toRight(input)
-
-  def parse(input: String): Option[ParseResult[T]]
+  def apply(input: String): Either[Exception, ParseResult[T]]
 
   def ~[S](parser: => Parser[S]): Parser[(T, S)] = in => {
     for {
-      r1 <- parse(in)
-      r2 <- parser.parse(r1.rest)
+      r1 <- this(in)
+      r2 <- parser(r1.rest)
     } yield ParseResult((r1.result, r2.result), r2.rest)
   }
 
@@ -22,23 +21,26 @@ trait Parser[+T] {
 
   def ~>[S](parser: => Parser[S]): Parser[S] = this ~ parser |-> (_._2)
 
-  def |[S >: T](parser: Parser[S]): Parser[S] = in => {
-    this.parse(in) orElse parser.parse(in)
+  def |[S >: T](parser: => Parser[S]): Parser[S] = in => {
+    this(in) match {
+      case Left(err1) => parser(in).left map { err2 => new Exception(s"$err1 OR $err2", err1) }
+      case x => x
+    }
   }
 
   def |->[S](f: T => S): Parser[S] = map(f)
 
-  def map[S](f: T => S): Parser[S] = in => parse(in).map(_.map(f))
+  def map[S](f: T => S): Parser[S] = in => this(in).map(_.map(f))
 
   def option: Parser[Option[T]] = this.map(Some(_)) | nothing.map(_ => None)
 
-  def repeat: Parser[Seq[T]] = this ~ repeat map {case x ~ y => x +: y}
+  def repeat: Parser[Seq[T]] = new RepeatParser(this)
 
-  def split(splitter: Parser[_]): Parser[Seq[T]] = {
-    val repeat = (this ~ splitter).map(_._1).repeat
-    val optionalEnd = (this ~ splitter.option).map(_._1)
+  def separatedBy(splitter: => Parser[_]): Parser[Seq[T]] = {
+    val repeat = (this <~ splitter).repeat
+    val optionalEnd = this <~ splitter.option
 
-    repeat ~ optionalEnd map {case x ~ y => x :+ y}
+    repeat ~ optionalEnd |-> {case x ~ y => x :+ y}
   }
 }
 
@@ -48,43 +50,64 @@ object ~ {
 
 object Parser {
 
-  def parse[T: Parser](input: String): Option[T] = {
-    implicitly[Parser[T]].apply(input).toOption.map(_.result)
+  def parse[T: Parser](input: String): Either[Exception, T] = {
+    implicitly[Parser[T]].apply(input).map(_.result)
   }
 
   def lit(string: String): Parser[Unit] = Literal(string)
 
   def regex(regex: Regex): Parser[String] = RegexParser(regex)
 
-  implicit val nothing: Parser[Unit] = in => Some(ParseResult((), in))
+  implicit val nothing: Parser[Unit] = in => Right(ParseResult((), in))
 
-  implicit val string: Parser[String] = in => Some(ParseResult(in, ""))
+  implicit val string: Parser[String] = in => Right(ParseResult(in, ""))
 
-  implicit val int: Parser[Int] = "[+-]?[0-9]+".r map { _.toInt }
+  implicit val int: Parser[Int] = "[+-]?[0-9]+".r |-> { _.toInt }
 
-  implicit val long: Parser[Long] = "[+-]?[0-9]+".r map { _.toLong }
+  implicit val long: Parser[Long] = "[+-]?[0-9]+".r |-> { _.toLong }
 
-  implicit val range: Parser[Range] = int ~ "-" ~ int map { case left ~ _ ~ right => left to right }
+  implicit val range: Parser[Range] = int ~ "-" ~ int |-> { case left ~ _ ~ right => left to right }
 
-  implicit val program: Parser[Program] = long.split(",") map { new Program(_) }
+  implicit val program: Parser[Program] = long.separatedBy(",") |-> { new Program(_) }
 
   implicit val eof: Parser[Unit] = in => {
     when(in.isEmpty) {
       ParseResult((), in)
-    }
+    } toRight new Exception(s"Expected end of file, but was $in")
   }
 
   implicit class Literal(string: String) extends Parser[Unit] {
-    override def parse(input: String): Option[ParseResult[Unit]] = {
+    override def apply(input: String): Either[Exception, ParseResult[Unit]] = {
       when(input.startsWith(string)) {
         ParseResult((), input.substring(string.length))
-      }
+      } toRight new Exception(s"Expected literal '$string', but was '$input'")
     }
   }
 
   implicit class RegexParser(regex: Regex) extends Parser[String] {
-    override def parse(input: String): Option[ParseResult[String]] = {
-      regex.findPrefixMatchOf(input).map(m => ParseResult(m.matched, m.after.toString))
+    override def apply(input: String): Either[Exception, ParseResult[String]] = {
+      regex.findPrefixMatchOf(input) map { m =>
+        ParseResult(m.matched, m.after.toString)
+      } toRight new Exception(s"Expected to match '$regex', but was '$input'")
+    }
+  }
+
+  private class RepeatParser[T](parser: Parser[T]) extends Parser[Seq[T]] {
+    override def apply(input: String): Either[Exception, ParseResult[Seq[T]]] = {
+      var rest = input
+      val results = mutable.Buffer[T]()
+
+      while (true) {
+        parser(rest) match {
+          case Right(ParseResult(result, r)) =>
+            results.append(result)
+            rest = r
+          case _ =>
+            return Right(ParseResult(results.toSeq, rest))
+        }
+      }
+
+      throw new Exception("Unreachable")
     }
   }
 }

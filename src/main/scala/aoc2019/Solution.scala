@@ -14,7 +14,7 @@ abstract class Solution[T: Parser] {
   final def main(args: Array[String]): Unit = {
     val path = getClass.getPackage.getName.replaceAllLiterally(".", "/")
     val name = s"$path.txt"
-    input = Source.fromResource(name).getLines.map(Parser.parse(_).get).toSeq
-    print(solution)
+    input = Source.fromResource(name).getLines.map(Parser.parse(_).toTry.get).toSeq
+    println(solution)
   }
 }
