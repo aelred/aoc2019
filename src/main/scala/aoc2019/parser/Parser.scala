@@ -54,6 +54,8 @@ object Parser {
     implicitly[Parser[T]].apply(input).map(_.result)
   }
 
+  val word: Parser[String] = "[a-zA-Z_][a-zA-Z0-9_]*".r
+
   def lit(string: String): Parser[Unit] = Literal(string)
 
   def regex(regex: Regex): Parser[String] = RegexParser(regex)
