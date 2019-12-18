@@ -6,6 +6,10 @@ sealed trait Direction {
   def anticlockwise: Direction
 }
 
+object Direction {
+  def all: Set[Direction] = Set(Up(), Down(), Left(), Right())
+}
+
 
 case class Up() extends Direction {
   override def shift(pos: Vec2): Vec2 = pos.copy(y = pos.y - 1)
