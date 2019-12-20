@@ -56,6 +56,10 @@ object Parser {
 
   val word: Parser[String] = "[a-zA-Z_][a-zA-Z0-9_]*".r
 
+  val digit: Parser[Int] = "[0-9]".r |-> { _.toInt }
+
+  val number: Parser[String] = "[+-]?[0-9]+".r
+
   def lit(string: String): Parser[Unit] = Literal(string)
 
   def regex(regex: Regex): Parser[String] = RegexParser(regex)
@@ -64,9 +68,9 @@ object Parser {
 
   implicit val string: Parser[String] = in => Right(ParseResult(in, ""))
 
-  implicit val int: Parser[Int] = "[+-]?[0-9]+".r |-> { _.toInt }
+  implicit val int: Parser[Int] = number |-> { _.toInt }
 
-  implicit val long: Parser[Long] = "[+-]?[0-9]+".r |-> { _.toLong }
+  implicit val long: Parser[Long] = number |-> { _.toLong }
 
   implicit val range: Parser[Range] = int ~ "-" ~ int |-> { case left ~ _ ~ right => left to right }
 
