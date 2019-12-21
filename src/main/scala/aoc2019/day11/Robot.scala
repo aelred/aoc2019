@@ -20,24 +20,14 @@ object Robot {
     val hull = mutable.Map[Vec2, Long]().withDefaultValue(Black)
     hull(robotPos) = White
 
-    val execution = program.start(() => hull(robotPos))
-
-    def execute(): Unit = {
-      for {
-        paint <- execution.continue()
-        _ = hull(robotPos) = paint
-        turn <- execution.continue()
-      } yield {
-        robotDir = turn match {
-          case TurnLeft => robotDir.anticlockwise
-          case TurnRight => robotDir.clockwise
-        }
-        robotPos = robotDir.shift(robotPos)
-        execute()
+    program.start(() => hull(robotPos)) { next =>
+      hull(robotPos) = next()
+      robotDir = next() match {
+        case TurnLeft => robotDir.anticlockwise
+        case TurnRight => robotDir.clockwise
       }
+      robotPos = robotDir.shift(robotPos)
     }
-
-    execute()
 
     hull.toMap
   }

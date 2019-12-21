@@ -1,13 +1,11 @@
 package aoc2019.program
 
 import scala.collection.mutable
-import scala.util.{Failure, Success, Try}
 
 class Execution private (memory: mutable.Map[Long, Long], input: () => Long) {
 
   private var instructionPointer: Long = 0
   private var relativeBase: Long = 0
-  private var halted: Boolean = false
 
   private class HaltException extends Exception
 
@@ -19,7 +17,7 @@ class Execution private (memory: mutable.Map[Long, Long], input: () => Long) {
       }
     }
 
-    while (!halted) {
+    while (true) {
       try {
         f(() => next())
       } catch {
@@ -29,8 +27,6 @@ class Execution private (memory: mutable.Map[Long, Long], input: () => Long) {
   }
 
   def continue(): Option[Long] = {
-    if (halted) return None
-
     while (true) {
       val (opCode, parameterModes) = readOpCode(consume())
 
@@ -60,10 +56,7 @@ class Execution private (memory: mutable.Map[Long, Long], input: () => Long) {
         case LessThan()           => write(if (read() < read()) 1 else 0)
         case Equals()             => write(if (read() == read()) 1 else 0)
         case AdjustRelativeBase() => relativeBase += read()
-        case Halt()               => {
-          halted = true
-          return None
-        }
+        case Halt()               => return None
       }
     }
 

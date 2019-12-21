@@ -36,13 +36,8 @@ class Program(initialMemory: Seq[Long]) {
   }
 
   private def execute(memory: mutable.Seq[Long], input: () => Long, output: Long => Unit): Unit = {
-    val execution = Execution(memory, input)
-
-    while (true) {
-      execution.continue() match {
-        case Some(out) => output(out)
-        case None => return
-      }
+    Execution(memory, input) { next =>
+      output(next())
     }
   }
 
