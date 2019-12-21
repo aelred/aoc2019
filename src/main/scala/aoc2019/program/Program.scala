@@ -27,11 +27,11 @@ class Program(initialMemory: Seq[Long]) {
 
   def executeAndReturnMemory: Seq[Long] = {
     val memory = initialMemory.toBuffer
-    execute(memory, input = () => throw new Exception("No input"), output = _ => {})
+    execute(memory, input=noInput, output = _ => {})
     memory.toSeq
   }
 
-  def start(input: () => Long): Execution = {
+  def start(input: () => Long = noInput): Execution = {
     Execution(mutable.Seq.from(initialMemory), input)
   }
 
@@ -45,5 +45,7 @@ class Program(initialMemory: Seq[Long]) {
       }
     }
   }
+
+  private val noInput = () => throw new Exception("No input")
 }
 
