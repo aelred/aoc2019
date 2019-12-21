@@ -7,7 +7,7 @@ import aoc2019.parser.Parser.{Literal, int}
 
 import scala.collection.mutable
 
-abstract class WireSolution extends Solution[Seq[WirePath]] {
+abstract class WireSolution extends Solution[(Seq[WirePath], Seq[WirePath])] {
 
   protected def visitedLocations(paths: Seq[WirePath]): Set[Visit] = {
     val locations = mutable.Set[Visit]()
@@ -29,10 +29,11 @@ abstract class WireSolution extends Solution[Seq[WirePath]] {
 object WireSolution {
 
   val direction: Parser[Direction] =
-    "U" |-> { _ => Up   ()} |
-    "D" |-> { _ => Down ()} |
-    "L" |-> { _ => Left ()} |
-    "R" |-> { _ => Right()}
+    "U" >> { _ => Up   ()} |
+    "D" >> { _ => Down ()} |
+    "L" >> { _ => Left ()} |
+    "R" >> { _ => Right()}
 
-  implicit val parser: Parser[Seq[WirePath]] =  (direction ~ int).map(WirePath.tupled).separatedBy(",")
+  val wirePath: Parser[Seq[WirePath]] = (direction ~ int).map(WirePath.tupled).separatedBy(",")
+  implicit val parser: Parser[(Seq[WirePath], Seq[WirePath])] = (wirePath <~ "\n") ~ wirePath
 }

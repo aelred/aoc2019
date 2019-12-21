@@ -2,8 +2,6 @@ package aoc2019.day12
 
 import aoc2019.Vec3
 
-import scala.collection.mutable
-
 case class Planet(position: Vec3, velocity: Vec3) {
 
   def energy: Int = {

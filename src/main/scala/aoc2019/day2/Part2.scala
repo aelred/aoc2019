@@ -6,7 +6,7 @@ import aoc2019.program.Program
 object Part2 extends Solution[Program] {
 
   def solution: Int = {
-    val program = line
+    val program = input
 
     val matchingParams = for {
       noun <- 0 to 100

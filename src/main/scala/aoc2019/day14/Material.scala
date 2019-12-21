@@ -11,6 +11,6 @@ case class Material(name: String, amount: Long) {
 }
 
 object Material {
-  val parser: Parser[Material] = int ~ " " ~ word |-> { case amount ~ _ ~ name => Material(name, amount)
+  val parser: Parser[Material] = int ~ " " ~ word >> { case amount ~ _ ~ name => Material(name, amount)
   }
 }

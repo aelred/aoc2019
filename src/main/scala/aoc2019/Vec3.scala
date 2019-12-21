@@ -16,7 +16,7 @@ case class Vec3(x: Int, y: Int, z: Int) {
 
 object Vec3 {
   implicit val parser: Parser[Vec3] =
-    ("<x=" ~> int) ~ (", y=" ~> int) ~ (", z=" ~> int) <~ ">" |-> {
+    ("<x=" ~> int) ~ (", y=" ~> int) ~ (", z=" ~> int) <~ ">" >> {
       case x ~ y ~ z => Vec3(x, y, z)
     }
 }

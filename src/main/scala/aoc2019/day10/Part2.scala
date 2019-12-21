@@ -4,7 +4,7 @@ import aoc2019.{Vec2, Solution}
 
 import scala.collection.mutable
 
-object Part2 extends Solution[Asteroids] {
+object Part2 extends Solution[Seq[Asteroids]] {
   def solution: Int = {
     var belt = AsteroidBelt(input)
     val asteroidsDestroyed = mutable.Buffer[Vec2]()

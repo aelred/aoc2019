@@ -1,7 +1,5 @@
 package aoc2019.day13
 
-import scala.collection.mutable
-
 sealed trait Tile {
   def char: Char = this match {
     case Empty() => ' '

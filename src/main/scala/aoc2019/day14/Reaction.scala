@@ -15,7 +15,7 @@ case class Reaction(inputs: Seq[Material], output: Material) {
 }
 
 object Reaction {
-  implicit val parser: Parser[Reaction] = Material.parser.separatedBy(", ") ~ " => " ~ Material.parser |-> {
+  implicit val parser: Parser[Reaction] = Material.parser.separatedBy(", ") ~ " => " ~ Material.parser >> {
     case inputs ~ _ ~ output => Reaction(inputs, output)
   }
 

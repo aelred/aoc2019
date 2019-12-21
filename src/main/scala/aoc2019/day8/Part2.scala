@@ -6,7 +6,7 @@ object Part2 extends Solution[String] {
   def solution: String = {
     val numPixelsPerLayer = 25 * 6
 
-    val layers = line.grouped(numPixelsPerLayer).toSeq
+    val layers = input.grouped(numPixelsPerLayer).toSeq
 
     val finalLayer = new StringBuilder(layers(0))
 

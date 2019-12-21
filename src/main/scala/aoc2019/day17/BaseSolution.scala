@@ -1,10 +1,11 @@
-package aoc2019
+package aoc2019.day17
 
+import aoc2019.{Down, Solution, Up, Left, Right, Vec2}
 import aoc2019.program.Program
 
 import scala.collection.mutable
 
-package object day17 {
+trait BaseSolution extends Solution[Program] {
 
   def createScaffoldSet(program: Program): (Set[Vec2], Robot) = {
     var pos = Vec2.zero
@@ -13,7 +14,7 @@ package object day17 {
 
     program.run() { next =>
       val char = next().toChar
-      print(char)
+      logRaw(char)
 
       if (char == '\n') {
         pos = pos.down.copy(x = 0)

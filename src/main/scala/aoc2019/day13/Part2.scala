@@ -2,12 +2,13 @@ package aoc2019.day13
 
 import aoc2019._
 import aoc2019.program.Program
+import scala.concurrent.duration._
 
 import scala.collection.mutable
 
 object Part2 extends Solution[Program] {
   override protected def solution: Long = {
-    val program = line
+    val program = input
 
     var direction = 0
     val screen = mutable.Map[Vec2, Tile]()
@@ -35,10 +36,10 @@ object Part2 extends Solution[Program] {
         direction = ballX.compare(paddleX)
 
         if (tile == Ball()) {
-          print("\u001B[0;0H")
-          println(score)
-          println(mapToString(screen.view.mapValues(_.char)))
-          Thread.sleep(66)
+          logRaw("\u001B[0;0H")
+          log(score)
+          log(mapToString(screen.view.mapValues(_.char)))
+          sleep(66.milliseconds)
         }
       }
     }

@@ -7,15 +7,15 @@ import scala.collection.mutable
 
 object Part1 extends Solution[Program] {
   def solution: Int = {
-    val program = line
+    val program = input
     val screen = mutable.Map[Vec2, Tile]()
 
     program.run() { next =>
       val pos = Vec2(next().toInt, next().toInt)
       val tile = Tile(next())
 
-      print("\u001B[0;0H")
-      println(mapToString(screen.view.mapValues(_.char)))
+      logRaw("\u001B[0;0H")
+      log(mapToString(screen.view.mapValues(_.char)))
 
       screen.put(pos, tile)
     }

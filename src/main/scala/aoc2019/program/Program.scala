@@ -55,6 +55,6 @@ class Program(initialMemory: Seq[Long]) {
   }
 
   private val noInput = () => throw new Exception("No input")
-  private val noAction: (() => Long) => Unit = _ => {}
+  private val noAction: (() => Long) => Unit = next => next()
 }
 

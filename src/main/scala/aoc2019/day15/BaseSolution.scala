@@ -1,10 +1,11 @@
-package aoc2019
+package aoc2019.day15
 
+import aoc2019.{Direction, Down, Solution, Up, Left, Right, Vec2}
 import aoc2019.program.Program
 
 import scala.collection.mutable
 
-package object day15 {
+trait BaseSolution extends Solution[Program] {
 
   def dijkstra[T](nodes: Set[T], neighbours: T => Set[T], start: T): Map[T, Int] = {
     val unvisited = mutable.Set.from(nodes)
@@ -70,14 +71,14 @@ package object day15 {
 
       directions.enqueue(nextDir)
 
-      print("\u001B[0;0H")
+      logRaw("\u001B[0;0H")
       val drawMap = map.view.mapValues {
         case Wall() => '█'
         case Clear() => '.'
         case Oxygen() => 'O'
       }.toMap
       val drawDrone = Map(pos -> 'X')
-      println(aoc2019.mapToString((drawMap ++ drawDrone).view))
+      log(aoc2019.mapToString((drawMap ++ drawDrone).view))
     }
 
     map.toMap

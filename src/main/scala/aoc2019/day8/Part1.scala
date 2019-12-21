@@ -6,7 +6,7 @@ object Part1 extends Solution[String] {
   def solution: Int = {
     val numPixelsPerLayer = 25 * 6
 
-    val layers = line.grouped(numPixelsPerLayer)
+    val layers = input.grouped(numPixelsPerLayer)
 
     val layer = layers.minBy(layer => layer.count(_ == '0'))
 

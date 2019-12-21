@@ -5,8 +5,8 @@ import aoc2019.Vec2
 object Part1 extends WireSolution {
 
   def solution: Int = {
-    val locations1 = visitedLocations(input(0)).map(_.location)
-    val locations2 = visitedLocations(input(1)).map(_.location)
+    val locations1 = visitedLocations(input._1).map(_.location)
+    val locations2 = visitedLocations(input._2).map(_.location)
 
     val intersections = locations1 & locations2
 

@@ -17,9 +17,9 @@ trait Parser[+T] {
     } yield ParseResult((r1.result, r2.result), r2.rest)
   }
 
-  def <~[S](parser: => Parser[S]): Parser[T] = this ~ parser |-> (_._1)
+  def <~[S](parser: => Parser[S]): Parser[T] = this ~ parser >> (_._1)
 
-  def ~>[S](parser: => Parser[S]): Parser[S] = this ~ parser |-> (_._2)
+  def ~>[S](parser: => Parser[S]): Parser[S] = this ~ parser >> (_._2)
 
   def |[S >: T](parser: => Parser[S]): Parser[S] = in => {
     this(in) match {
@@ -28,7 +28,7 @@ trait Parser[+T] {
     }
   }
 
-  def |->[S](f: T => S): Parser[S] = map(f)
+  def >>[S](f: T => S): Parser[S] = map(f)
 
   def map[S](f: T => S): Parser[S] = in => this(in).map(_.map(f))
 
@@ -40,8 +40,10 @@ trait Parser[+T] {
     val repeat = (this <~ splitter).repeat
     val optionalEnd = this <~ splitter.option
 
-    repeat ~ optionalEnd |-> {case x ~ y => x :+ y}
+    repeat ~ optionalEnd >> {case x ~ y => x :+ y}
   }
+
+  def lines: Parser[Seq[T]] = separatedBy("\n")
 }
 
 object ~ {
@@ -51,12 +53,12 @@ object ~ {
 object Parser {
 
   def parse[T: Parser](input: String): Either[Exception, T] = {
-    implicitly[Parser[T]].apply(input).map(_.result)
+    (implicitly[Parser[T]] <~ eof)(input).map(_.result)
   }
 
   val word: Parser[String] = "[a-zA-Z_][a-zA-Z0-9_]*".r
 
-  val digit: Parser[Int] = "[0-9]".r |-> { _.toInt }
+  val digit: Parser[Int] = "[0-9]".r >> { _.toInt }
 
   val number: Parser[String] = "[+-]?[0-9]+".r
 
@@ -68,19 +70,21 @@ object Parser {
 
   implicit val string: Parser[String] = in => Right(ParseResult(in, ""))
 
-  implicit val int: Parser[Int] = number |-> { _.toInt }
+  implicit val int: Parser[Int] = number >> { _.toInt }
 
-  implicit val long: Parser[Long] = number |-> { _.toLong }
+  implicit val long: Parser[Long] = number >> { _.toLong }
 
-  implicit val range: Parser[Range] = int ~ "-" ~ int |-> { case left ~ _ ~ right => left to right }
+  implicit val program: Parser[Program] = long.separatedBy(",") >> { new Program(_) }
 
-  implicit val program: Parser[Program] = long.separatedBy(",") |-> { new Program(_) }
+  implicit def lineParser[T](implicit parser: Parser[T]): Parser[Seq[T]] = parser.lines
 
   implicit val eof: Parser[Unit] = in => {
     when(in.isEmpty) {
       ParseResult((), in)
     } toRight new Exception(s"Expected end of file, but was $in")
   }
+
+  val range: Parser[Range] = int ~ "-" ~ int >> { case left ~ _ ~ right => left to right }
 
   implicit class Literal(string: String) extends Parser[Unit] {
     override def apply(input: String): Either[Exception, ParseResult[Unit]] = {

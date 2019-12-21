@@ -5,5 +5,5 @@ import aoc2019.program.Program
 
 object Part2 extends Solution[Program] {
 
-  def solution: Seq[Long] = line.execute(5)
+  def solution: Long = input.execute(5).last
 }

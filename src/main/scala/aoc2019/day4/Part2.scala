@@ -5,7 +5,7 @@ import aoc2019.Solution
 object Part2 extends Solution[Range] {
 
   def solution: Int = {
-    val range = line
+    val range = input
 
     val possiblePasswords = for {
       password <- range

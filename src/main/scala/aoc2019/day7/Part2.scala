@@ -6,7 +6,7 @@ import aoc2019.program.Program
 object Part2 extends Solution[Program] {
 
   def solution: Long = {
-    val program = line
+    val program = input
 
     val allPhaseSettings = (5L to 9L).permutations
 

@@ -5,5 +5,5 @@ import aoc2019.program.Program
 
 object Part1 extends Solution[Program] {
 
-  def solution: String = line.execute(1).mkString("\n")
+  def solution: String = input.execute(1).mkString("\n")
 }

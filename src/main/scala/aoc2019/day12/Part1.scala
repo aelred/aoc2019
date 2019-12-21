@@ -2,7 +2,7 @@ package aoc2019.day12
 
 import aoc2019.{Vec3, Solution}
 
-object Part1 extends Solution[Vec3] {
+object Part1 extends Solution[Seq[Vec3]] {
   def solution: Int = {
     val initialPlanets = input map {
       Planet(_, Vec3(0, 0, 0))

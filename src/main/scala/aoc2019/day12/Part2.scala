@@ -2,7 +2,7 @@ package aoc2019.day12
 
 import aoc2019.{Solution, Vec3}
 
-object Part2 extends Solution[Vec3] {
+object Part2 extends Solution[Seq[Vec3]] {
   def solution: Long = {
     val initialPlanets = input map {
       Planet(_, Vec3(0, 0, 0))
@@ -29,15 +29,15 @@ object Part2 extends Solution[Vec3] {
       iter += 1
 
       if (xPeriod.isEmpty && comparePlanets(_.x)) {
-        println(s"x: $iter")
+        log(s"x: $iter")
         xPeriod = Some(iter)
       }
       if (yPeriod.isEmpty && comparePlanets(_.y)) {
-        println(s"y: $iter")
+        log(s"y: $iter")
         yPeriod = Some(iter)
       }
       if (zPeriod.isEmpty && comparePlanets(_.z)) {
-        println(s"z: $iter")
+        log(s"z: $iter")
         zPeriod = Some(iter)
       }
     }

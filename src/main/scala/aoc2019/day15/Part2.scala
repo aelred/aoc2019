@@ -3,10 +3,10 @@ package aoc2019.day15
 import aoc2019._
 import aoc2019.program.Program
 
-object Part2 extends Solution[Program] {
+object Part2 extends BaseSolution {
 
   override protected def solution: Int = {
-    val map = explore(line)
+    val map = explore(input)
 
     val oxygen = map.find { case (_, cell) => cell == Oxygen() }.get._1
 

@@ -2,7 +2,7 @@ package aoc2019.day6
 
 import aoc2019.Solution
 
-object Part2 extends Solution[Orbit] {
+object Part2 extends Solution[Seq[Orbit]] {
 
   override def solution: Int = {
     val orbitMap = input.map(orbit => orbit.satellite -> orbit.planet).toMap

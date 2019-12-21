@@ -4,7 +4,7 @@ import aoc2019.Solution
 
 object Part2 extends Solution[Seq[Int]] {
   def solution: String = {
-    val signal = Seq.fill(10000)(line).flatten
+    val signal = Seq.fill(10000)(input).flatten
     val offset = signal.take(7).mkString.toInt
     val shortSignal = signal.drop(offset)
     LazyList.iterate(shortSignal)(shortPhase)(100).take(8).mkString

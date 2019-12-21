@@ -2,7 +2,7 @@ package aoc2019.day14
 
 import aoc2019.Solution
 
-object Part2 extends Solution[Reaction] {
+object Part2 extends Solution[Seq[Reaction]] {
 
   override protected def solution: Long = {
     binarySearch(1000000000000L, Reaction.oreForFuel(input, _), 1, Int.MaxValue)

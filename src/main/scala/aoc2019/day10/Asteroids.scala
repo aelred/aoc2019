@@ -7,5 +7,5 @@ case class Asteroids(asteroids: Seq[Boolean])
 
 object Asteroids {
   implicit val parser: Parser[Asteroids] =
-    ("#" |-> (_ => true) | "." |-> (_ => false)).repeat |-> (Asteroids(_))
+    ("#" >> (_ => true) | "." >> (_ => false)).repeat >> (Asteroids(_))
 }

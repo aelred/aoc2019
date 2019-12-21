@@ -3,9 +3,9 @@ package aoc2019.day17
 import aoc2019.Solution
 import aoc2019.program.Program
 
-object Part1 extends Solution[Program] {
+object Part1 extends BaseSolution {
   def solution: Int = {
-    val program = line
+    val program = input
     val (scaffolds, _) = createScaffoldSet(program)
 
     val leftEdge = scaffolds.map(_.x).min

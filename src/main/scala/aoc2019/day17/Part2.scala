@@ -1,16 +1,16 @@
 package aoc2019.day17
 
-import aoc2019.Solution
 import aoc2019.program.Program
 
 import scala.collection.mutable
 
-object Part2 extends Solution[Program] {
+object Part2 extends BaseSolution {
   type Action = Either[MoveFunc, Movement]
 
   def solution: Long = {
-    val initialMovement: Seq[Movement] = getPath(line)
-    println(movementString(initialMovement))
+    val program = input
+    val initialMovement: Seq[Movement] = getPath(program)
+    log(movementString(initialMovement))
 
     val initialActions = initialMovement.map(Right(_))
 
@@ -42,17 +42,17 @@ object Part2 extends Solution[Program] {
     val (move, a, b, c) = results(0)
 
     val inputStr = s"${moveFuncString(move)}\n${movementString(a)}\n${movementString(b)}\n${movementString(c)}\nn\n"
-    println("INPUT:")
-    println(inputStr)
-    val input = mutable.Queue.from(inputStr)
+    log("INPUT:")
+    log(inputStr)
+    val inputQueue = mutable.Queue.from(inputStr)
 
     var output: Long = 0
 
-    line.withMemory(0 -> 2).run(input.dequeue) { next =>
+    program.withMemory(0 -> 2).run(inputQueue.dequeue) { next =>
       output = next()
-      print(output.toChar)
+      logRaw(output.toChar)
     }
-    println()
+    log()
 
     output
   }
@@ -93,7 +93,7 @@ object Part2 extends Solution[Program] {
     movements.toSeq
   }
 
-  def printActions(actions: Seq[Action]): Unit = {
+  def logActions(actions: Seq[Action]): Unit = {
     var movement = 0
     val result = mutable.Buffer[String]()
 
@@ -119,7 +119,7 @@ object Part2 extends Solution[Program] {
 
     appendMovement()
 
-    println(result.mkString(","))
+    log(result.mkString(","))
   }
 
   def movementString(moves: Seq[Movement]): String = {
