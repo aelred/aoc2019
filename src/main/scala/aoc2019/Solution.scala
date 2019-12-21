@@ -10,7 +10,9 @@ abstract class Solution[T: Parser] {
   protected final var input: T = _
   protected final var logging: Boolean = true
 
-  protected def solution: Any
+  protected def part1: Any
+
+  protected def part2: Any
 
   protected final def logRaw(obj: => Any): Unit = {
     if (logging) {
@@ -35,10 +37,24 @@ abstract class Solution[T: Parser] {
   final def run(logging: Boolean): Unit = {
     this.logging = logging
 
-    val path = getClass.getPackage.getName.replaceAllLiterally(".", "/")
+    val clazz = Option(getClass.getEnclosingClass).getOrElse(getClass)
+    val path = clazz.getName.replaceAllLiterally(".", "/").stripSuffix("$")
     val name = s"$path.txt"
     val inputString = Source.fromResource(name).getLines.mkString("\n")
     input = Parser.parse(inputString).toTry.get
-    println(solution)
+
+    println(
+      s"""
+         |
+         | Part 1
+         | ------""".stripMargin)
+    println(part1)
+
+    println(
+      s"""
+         |
+         | Part 2
+         | ------""".stripMargin)
+    println(part2)
   }
 }
