@@ -10,7 +10,7 @@ object Part1 extends Solution[Program] {
     val program = line
     val screen = mutable.Map[Vec2, Tile]()
 
-    program.start() { next =>
+    program.run() { next =>
       val pos = Vec2(next().toInt, next().toInt)
       val tile = Tile(next())
 

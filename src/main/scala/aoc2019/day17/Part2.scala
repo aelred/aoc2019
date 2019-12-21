@@ -48,7 +48,7 @@ object Part2 extends Solution[Program] {
 
     var output: Long = 0
 
-    line.withMemory(0 -> 2).start(input.dequeue) { next =>
+    line.withMemory(0 -> 2).run(input.dequeue) { next =>
       output = next()
       print(output.toChar)
     }

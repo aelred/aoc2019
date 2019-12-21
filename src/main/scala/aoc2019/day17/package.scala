@@ -11,7 +11,7 @@ package object day17 {
     var robot: Option[Robot] = None
     val scaffolds = mutable.Set[Vec2]()
 
-    program.start() { next =>
+    program.run() { next =>
       val char = next().toChar
       print(char)
 

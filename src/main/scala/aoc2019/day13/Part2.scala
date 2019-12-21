@@ -15,7 +15,7 @@ object Part2 extends Solution[Program] {
     var ballX = 0
     var score = 0L
 
-    program.withMemory(0 -> 2).start(() => direction) { next =>
+    program.withMemory(0 -> 2).run(() => direction) { next =>
       val x = next()
       val y = next()
       val value = next()

@@ -7,24 +7,7 @@ class Execution private (memory: mutable.Map[Long, Long], input: () => Long) {
   private var instructionPointer: Long = 0
   private var relativeBase: Long = 0
 
-  private class HaltException extends Exception
-
-  def apply(f: (() => Long) => Unit): Unit = {
-    def next() = {
-      continue() match {
-        case Some(value) => value
-        case None => throw new HaltException()
-      }
-    }
-
-    while (true) {
-      try {
-        f(() => next())
-      } catch {
-        case _: HaltException => return
-      }
-    }
-  }
+  def read(address: Long): Long = memory(address)
 
   def continue(): Option[Long] = {
     while (true) {

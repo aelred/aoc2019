@@ -5,14 +5,39 @@ import scala.collection.mutable
 class Program(initialMemory: Seq[Long]) {
 
   def execute(input: Long*): Seq[Long] = {
-    val memory = initialMemory.toBuffer
-
     val inputIterator = input.iterator
     val outputs = mutable.Buffer[Long]()
 
-    execute(memory, inputIterator.next, outputs.append(_))
+    run(inputIterator.next) { next =>
+      outputs.append(next())
+    }
 
     outputs.toSeq
+  }
+
+  def run(input: () => Long = noInput)(f: (() => Long) => Unit = noAction): Execution = runWhile(() => true)(input)(f)
+
+  def runWhile(condition: () => Boolean)(input: () => Long = noInput)(f: (() => Long) => Unit = noAction): Execution = {
+    val execution = start(input)
+
+    class HaltException extends Exception
+
+    def next() = {
+      execution.continue() match {
+        case Some(value) => value
+        case None => throw new HaltException()
+      }
+    }
+
+    do {
+      try {
+        f(next)
+      } catch {
+        case _: HaltException => return execution
+      }
+    } while (condition())
+
+    execution
   }
 
   def withMemory(setMemory: (Int, Long)*): Program = {
@@ -25,22 +50,11 @@ class Program(initialMemory: Seq[Long]) {
     new Program(memory.toSeq)
   }
 
-  def executeAndReturnMemory: Seq[Long] = {
-    val memory = initialMemory.toBuffer
-    execute(memory, input=noInput, output = _ => {})
-    memory.toSeq
-  }
-
   def start(input: () => Long = noInput): Execution = {
-    Execution(mutable.Seq.from(initialMemory), input)
-  }
-
-  private def execute(memory: mutable.Seq[Long], input: () => Long, output: Long => Unit): Unit = {
-    Execution(memory, input) { next =>
-      output(next())
-    }
+    Execution(initialMemory.toBuffer, input)
   }
 
   private val noInput = () => throw new Exception("No input")
+  private val noAction: (() => Long) => Unit = _ => {}
 }
 

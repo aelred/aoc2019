@@ -20,7 +20,7 @@ object Robot {
     val hull = mutable.Map[Vec2, Long]().withDefaultValue(Black)
     hull(robotPos) = White
 
-    program.start(() => hull(robotPos)) { next =>
+    program.run(() => hull(robotPos)) { next =>
       hull(robotPos) = next()
       robotDir = next() match {
         case TurnLeft => robotDir.anticlockwise

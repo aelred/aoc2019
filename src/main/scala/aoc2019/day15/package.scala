@@ -33,45 +33,42 @@ package object day15 {
     val unexplored = mutable.Set[Vec2]()
     unexplored.add(pos)
 
-    val execution = program.start(() => directions.dequeue() match {
+    def input() = directions.dequeue() match {
       case Up() => 1
       case Down() => 2
       case Left() => 3
       case Right() => 4
-    })
+    }
 
-    do {
+    program.runWhile(() => unexplored.nonEmpty)(input) { next =>
       val thisDir = directions.front
       val checkedPos = thisDir.shift(pos)
 
-      for {
-        output <- execution.continue()
-      } yield {
-        val cell = output match {
-          case 0 => Wall()
-          case 1 => Clear()
-          case 2 => Oxygen()
-        }
-
-        val (nextPos, nextDir) = cell match {
-          case Wall() =>
-            (pos, thisDir.clockwise)
-          case _ =>
-            (checkedPos, thisDir.anticlockwise)
-        }
-        map(checkedPos) = cell
-        unexplored.remove(checkedPos)
-
-        pos = nextPos
-
-        for (direction <- Direction.all) {
-          if (!map.contains(direction.shift(pos))) {
-            unexplored.add(pos)
-          }
-        }
-
-        directions.enqueue(nextDir)
+      val output = next()
+      val cell = output match {
+        case 0 => Wall()
+        case 1 => Clear()
+        case 2 => Oxygen()
       }
+
+      val (nextPos, nextDir) = cell match {
+        case Wall() =>
+          (pos, thisDir.clockwise)
+        case _ =>
+          (checkedPos, thisDir.anticlockwise)
+      }
+      map(checkedPos) = cell
+      unexplored.remove(checkedPos)
+
+      pos = nextPos
+
+      for (direction <- Direction.all) {
+        if (!map.contains(direction.shift(pos))) {
+          unexplored.add(pos)
+        }
+      }
+
+      directions.enqueue(nextDir)
 
       print("\u001B[0;0H")
       val drawMap = map.view.mapValues {
@@ -81,7 +78,7 @@ package object day15 {
       }.toMap
       val drawDrone = Map(pos -> 'X')
       println(aoc2019.mapToString((drawMap ++ drawDrone).view))
-    } while (unexplored.nonEmpty)
+    }
 
     map.toMap
   }
