@@ -10,10 +10,10 @@ case class Vec2(x: Int, y: Int) {
 
   def shift(direction: Direction): Vec2 = direction.shift(this)
 
-  def left: Vec2 = shift(Left())
-  def right: Vec2 = shift(Right())
-  def up: Vec2 = shift(Up())
-  def down: Vec2 = shift(Down())
+  def left: Vec2 = shift(Direction.L())
+  def right: Vec2 = shift(Direction.R())
+  def up: Vec2 = shift(Direction.U())
+  def down: Vec2 = shift(Direction.D())
   def neighbours: Set[Vec2] = Direction.all.map(shift)
 }
 

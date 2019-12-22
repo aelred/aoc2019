@@ -215,10 +215,10 @@ object day17 extends Solution[Program] {
 
         val robotDir = char match {
           case 'X' => throw new Exception("Robot has already tumbled into space!")
-          case '^' => Some(Up())
-          case 'v' => Some(Down())
-          case '>' => Some(Right())
-          case '<' => Some(Left())
+          case '^' => Some(Direction.U())
+          case 'v' => Some(Direction.D())
+          case '>' => Some(Direction.R())
+          case '<' => Some(Direction.L())
           case _ => None
         }
 

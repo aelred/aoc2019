@@ -55,7 +55,7 @@ object day15 extends Solution[Program] {
   }
 
   def explore(program: Program): Map[Vec2, Cell] = {
-    val directions = mutable.Queue[Direction](Right())
+    val directions = mutable.Queue[Direction](Direction.R())
     var pos = Vec2(0, 0)
 
     val map = mutable.Map[Vec2, Cell]()
@@ -63,10 +63,10 @@ object day15 extends Solution[Program] {
     unexplored.add(pos)
 
     def input() = directions.dequeue() match {
-      case Up() => 1
-      case Down() => 2
-      case Left() => 3
-      case Right() => 4
+      case Direction.U() => 1
+      case Direction.D() => 2
+      case Direction.L() => 3
+      case Direction.R() => 4
     }
 
     program.runWhile(() => unexplored.nonEmpty)(input) { next =>

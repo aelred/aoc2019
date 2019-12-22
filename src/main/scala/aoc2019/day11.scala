@@ -28,7 +28,7 @@ object day11 extends Solution[Program] {
 
   def run(program: Program): Map[Vec2, Long] = {
     var robotPos = Vec2(0, 0)
-    var robotDir: Direction = Up()
+    var robotDir: Direction = Direction.U()
 
     val hull = mutable.Map[Vec2, Long]().withDefaultValue(Black)
     hull(robotPos) = White

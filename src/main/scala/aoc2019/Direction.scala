@@ -10,36 +10,36 @@ sealed trait Direction {
 }
 
 object Direction {
-  def all: Set[Direction] = Set(Up(), Down(), Left(), Right())
+
+  case class U() extends Direction {
+    override def shift(pos: Vec2): Vec2 = pos.copy(y = pos.y - 1)
+    override def clockwise: Direction = R()
+    override def anticlockwise: Direction = L()
+  }
+
+  case class D() extends Direction {
+    override def shift(pos: Vec2): Vec2 = pos.copy(y = pos.y + 1)
+    override def clockwise: Direction = L()
+    override def anticlockwise: Direction = R()
+  }
+
+  case class L() extends Direction {
+    override def shift(pos: Vec2): Vec2 = pos.copy(x = pos.x - 1)
+    override def clockwise: Direction = U()
+    override def anticlockwise: Direction = D()
+  }
+
+  case class R() extends Direction {
+    override def shift(pos: Vec2): Vec2 = pos.copy(x = pos.x + 1)
+    override def clockwise: Direction = D()
+    override def anticlockwise: Direction = U()
+  }
+
+  def all: Set[Direction] = Set(U(), D(), L(), R())
 
   val parser: Parser[Direction] =
-    "U" >> { _ => Up   ()} |
-    "D" >> { _ => Down ()} |
-    "L" >> { _ => Left ()} |
-    "R" >> { _ => Right()}
-}
-
-
-case class Up() extends Direction {
-  override def shift(pos: Vec2): Vec2 = pos.copy(y = pos.y - 1)
-  override def clockwise: Direction = Right()
-  override def anticlockwise: Direction = Left()
-}
-
-case class Down() extends Direction {
-  override def shift(pos: Vec2): Vec2 = pos.copy(y = pos.y + 1)
-  override def clockwise: Direction = Left()
-  override def anticlockwise: Direction = Right()
-}
-
-case class Left() extends Direction {
-  override def shift(pos: Vec2): Vec2 = pos.copy(x = pos.x - 1)
-  override def clockwise: Direction = Up()
-  override def anticlockwise: Direction = Down()
-}
-
-case class Right() extends Direction {
-  override def shift(pos: Vec2): Vec2 = pos.copy(x = pos.x + 1)
-  override def clockwise: Direction = Down()
-  override def anticlockwise: Direction = Up()
+    "U" >> { _ => U   ()} |
+    "D" >> { _ => D ()} |
+    "L" >> { _ => L ()} |
+    "R" >> { _ => R()}
 }
