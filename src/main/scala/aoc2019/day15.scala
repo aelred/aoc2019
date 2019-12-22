@@ -13,9 +13,7 @@ object day15 extends Solution[Program] {
 
     val nonWalls: Set[Vec2] = map.filter { case (_, cell) => cell != Wall() }.map { case (p, _) => p }.toSet
 
-    val neighbours: Map[Vec2, Set[Vec2]] = nonWalls.map { pos =>
-      pos -> Direction.all.map(_.shift(pos))
-    }.toMap
+    val neighbours: Map[Vec2, Set[Vec2]] = nonWalls.map { pos => pos -> pos.neighbours }.toMap
 
     dijkstra(nonWalls, neighbours.apply, Vec2(0, 0))(oxygen)
   }
@@ -27,9 +25,7 @@ object day15 extends Solution[Program] {
 
     val nonWalls: Set[Vec2] = map.filter { case (_, cell) => cell != Wall() }.map { case (p, _) => p }.toSet
 
-    val neighbours: Map[Vec2, Set[Vec2]] = nonWalls.map { pos =>
-      pos -> Direction.all.map(_.shift(pos))
-    }.toMap
+    val neighbours: Map[Vec2, Set[Vec2]] = nonWalls.map { pos => pos -> pos.neighbours }.toMap
 
     dijkstra(nonWalls, neighbours.apply, oxygen).values.max - 1
   }
@@ -95,8 +91,8 @@ object day15 extends Solution[Program] {
 
       pos = nextPos
 
-      for (direction <- Direction.all) {
-        if (!map.contains(direction.shift(pos))) {
+      for (neighbour <- pos.neighbours) {
+        if (!map.contains(neighbour)) {
           unexplored.add(pos)
         }
       }
