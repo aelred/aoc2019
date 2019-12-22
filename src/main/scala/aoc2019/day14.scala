@@ -3,6 +3,8 @@ package aoc2019
 import aoc2019.parser.Parser
 import aoc2019.parser.Parser._
 
+import scala.Integral.Implicits._
+import scala.Ordering.Implicits._
 import scala.collection.mutable
 
 object day14 {
@@ -13,21 +15,21 @@ object day14 {
 
   object Solution extends Solution[Seq[Reaction]] {
     def part1: Long = Reaction.oreForFuel(input, 1)
-    def part2: Long = binarySearch(1000000000000L, Reaction.oreForFuel(input, _), 1, Int.MaxValue)
+    def part2: Long = binarySearch(1000000000000L, Reaction.oreForFuel(input, _), 1L, Int.MaxValue.toLong)
   }
 
-  private def binarySearch(
-    expected: Long, op: Long => Long, min: Long = Long.MinValue, max: Long = Long.MaxValue): Long = {
+  private def binarySearch[T: Ordering, N: Integral](target: T, lookup: N => T, min: N, max: N): N = {
+    val two = implicitly[Integral[N]].fromInt(2)
 
-    val value = (max + min) / 2
-    val result = op(value)
+    val value = (max + min) / two
+    val result = lookup(value)
 
-    if (result == expected || value == min) {
+    if (result == target || value == min) {
       value
-    } else if (result > expected) {
-      binarySearch(expected, op, min, value)
+    } else if (result > target) {
+      binarySearch(target, lookup, min, value)
     } else {
-      binarySearch(expected, op, value, max)
+      binarySearch(target, lookup, value, max)
     }
   }
 
