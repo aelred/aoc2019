@@ -1,5 +1,8 @@
 package aoc2019.program
 
+import aoc2019.program.OpCode._
+import aoc2019.program.ParameterMode.{Immediate, Position, Relative}
+
 import scala.collection.mutable
 
 class Execution private (memory: mutable.Map[Long, Long], input: () => Long) {
@@ -15,17 +18,17 @@ class Execution private (memory: mutable.Map[Long, Long], input: () => Long) {
 
       def read(): Long = {
         parameterModes.next match {
-          case PositionMode()  => memory(consume())
-          case ImmediateMode() => consume()
-          case RelativeMode()  => memory(consume() + relativeBase)
+          case Position()  => memory(consume())
+          case Immediate() => consume()
+          case Relative()  => memory(consume() + relativeBase)
         }
       }
 
       def write(newValue: Long): Unit = {
         parameterModes.next match {
-          case PositionMode()  => memory(consume()) = newValue
-          case ImmediateMode() => throw new Exception("Writing in immediate mode")
-          case RelativeMode()  => memory(consume() + relativeBase) = newValue
+          case Position()  => memory(consume()) = newValue
+          case Immediate() => throw new Exception("Writing in immediate mode")
+          case Relative()  => memory(consume() + relativeBase) = newValue
         }
       }
 
@@ -60,9 +63,9 @@ class Execution private (memory: mutable.Map[Long, Long], input: () => Long) {
     val zeros = LazyList.continually('0')
 
     val parameterModes = LazyList.concat(paramsStr.toSeq.reverse, zeros) map {
-      case '0' => PositionMode()
-      case '1' => ImmediateMode()
-      case '2' => RelativeMode()
+      case '0' => Position()
+      case '1' => Immediate()
+      case '2' => Relative()
     }
 
     val opCodeInt = opCodeStr.toInt

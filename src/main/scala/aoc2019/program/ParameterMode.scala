@@ -1,6 +1,9 @@
 package aoc2019.program
 
 sealed trait ParameterMode
-case class PositionMode() extends ParameterMode
-case class ImmediateMode() extends ParameterMode
-case class RelativeMode() extends ParameterMode
+
+object ParameterMode {
+  case class Position() extends ParameterMode
+  case class Immediate() extends ParameterMode
+  case class Relative() extends ParameterMode
+}
