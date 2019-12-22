@@ -1,6 +1,5 @@
 package aoc2019
 
-import aoc2019.parser.~
 import aoc2019.parser.Parser
 import aoc2019.parser.Parser._
 
@@ -8,12 +7,18 @@ import scala.collection.mutable
 
 object day14 {
 
+  val material: Parser[Material] = (long <~ " ") ~ word >> Material.tupled
+
+  implicit val reaction: Parser[Reaction] = material.separatedBy(", ") ~ (" => " ~> material) >> Reaction.tupled
+
   object Solution extends Solution[Seq[Reaction]] {
     def part1: Long = Reaction.oreForFuel(input, 1)
     def part2: Long = binarySearch(1000000000000L, Reaction.oreForFuel(input, _), 1, Int.MaxValue)
   }
 
-  private def binarySearch(expected: Long, op: Long => Long, min: Long = Long.MinValue, max: Long = Long.MaxValue): Long = {
+  private def binarySearch(
+    expected: Long, op: Long => Long, min: Long = Long.MinValue, max: Long = Long.MaxValue): Long = {
+
     val value = (max + min) / 2
     val result = op(value)
 
@@ -26,18 +31,13 @@ object day14 {
     }
   }
 
-  case class Material(name: String, amount: Long) {
+  case class Material(amount: Long, name: String) {
     def *(value: Long): Material = copy(amount=amount*value)
 
-    override def toString: String = s"$name $amount"
+    override def toString: String = s"$amount $name"
   }
 
-  object Material {
-    val parser: Parser[Material] = int ~ " " ~ word >> { case amount ~ _ ~ name => Material(name, amount)
-    }
-  }
-
-  case class Reaction(inputs: Seq[Material], output: Material) {
+  case class Reaction(inputs: List[Material], output: Material) {
 
     def *(value: Long): Reaction = {
       Reaction(inputs.map(_ * value), output * value)
@@ -47,9 +47,8 @@ object day14 {
   }
 
   object Reaction {
-    implicit val parser: Parser[Reaction] = Material.parser.separatedBy(", ") ~ " => " ~ Material.parser >> {
-      case inputs ~ _ ~ output => Reaction(inputs, output)
-    }
+
+    def tupled: ((List[Material], Material)) => Reaction = (Reaction.apply _).tupled
 
     def react(reactions: Seq[Reaction], initialMaterials: Seq[Material]): Seq[Material] = {
 
@@ -59,7 +58,7 @@ object day14 {
 
       def materialsSeq = {
         materials.toSeq
-          .map{case (name, amount) => Material(name, amount)}
+          .map{case (name, amount) => Material(amount, name)}
       }
 
       def neededMaterials = materialsSeq.filter(m => m.name != "ORE" && m.amount < 0)
@@ -82,7 +81,7 @@ object day14 {
     }
 
     def oreForFuel(reactions: Seq[Reaction], fuel: Long): Long = {
-      val materials = react(reactions, Seq(Material("FUEL", -fuel)))
+      val materials = react(reactions, Seq(Material(-fuel, "FUEL")))
       -materials.find(_.name == "ORE").get.amount
     }
   }

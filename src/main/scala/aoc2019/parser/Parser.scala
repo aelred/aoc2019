@@ -1,7 +1,6 @@
 package aoc2019.parser
 
 import aoc2019.parser.Parser.{RepeatParser, nothing}
-import aoc2019.program.Program
 
 import scala.Option.when
 import scala.collection.mutable
@@ -34,16 +33,16 @@ trait Parser[+T] {
 
   def option: Parser[Option[T]] = this.map(Some(_)) | nothing.map(_ => None)
 
-  def repeat: Parser[Seq[T]] = new RepeatParser(this)
+  def repeat: Parser[List[T]] = new RepeatParser(this)
 
-  def separatedBy(splitter: => Parser[_]): Parser[Seq[T]] = {
+  def separatedBy(splitter: => Parser[_]): Parser[List[T]] = {
     val repeat = (this <~ splitter).repeat
     val optionalEnd = this <~ splitter.option
 
-    repeat ~ optionalEnd >> {case x ~ y => x :+ y}
+    repeat ~ optionalEnd >> {case x ~ y => x appended y}
   }
 
-  def lines: Parser[Seq[T]] = separatedBy("\n")
+  def lines: Parser[List[T]] = separatedBy("\n")
 }
 
 object ~ {
@@ -74,17 +73,15 @@ object Parser {
 
   implicit val long: Parser[Long] = number >> { _.toLong }
 
-  implicit val program: Parser[Program] = long.separatedBy(",") >> { new Program(_) }
+  implicit val range: Parser[Range] = int ~ "-" ~ int >> { case left ~ _ ~ right => left to right }
 
-  implicit def lineParser[T](implicit parser: Parser[T]): Parser[Seq[T]] = parser.lines
+  implicit def lineParser[T](implicit parser: Parser[T]): Parser[List[T]] = parser.lines
 
   implicit val eof: Parser[Unit] = in => {
     when(in.isEmpty) {
       ParseResult((), in)
     } toRight new Exception(s"Expected end of file, but was $in")
   }
-
-  val range: Parser[Range] = int ~ "-" ~ int >> { case left ~ _ ~ right => left to right }
 
   implicit class Literal(string: String) extends Parser[Unit] {
     override def apply(input: String): Either[Exception, ParseResult[Unit]] = {
@@ -102,8 +99,8 @@ object Parser {
     }
   }
 
-  private class RepeatParser[T](parser: Parser[T]) extends Parser[Seq[T]] {
-    override def apply(input: String): Either[Exception, ParseResult[Seq[T]]] = {
+  private class RepeatParser[T](parser: Parser[T]) extends Parser[List[T]] {
+    override def apply(input: String): Either[Exception, ParseResult[List[T]]] = {
       var rest = input
       val results = mutable.Buffer[T]()
 
@@ -113,7 +110,7 @@ object Parser {
             results.append(result)
             rest = r
           case _ =>
-            return Right(ParseResult(results.toSeq, rest))
+            return Right(ParseResult(results.toList, rest))
         }
       }
 

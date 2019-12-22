@@ -1,6 +1,6 @@
 package aoc2019
 
-object day1 extends Solution[Seq[Int]] {
+object day1 extends Solution[List[Int]] {
 
   def part1: Int = input
       .map(x => (x / 3) - 2)

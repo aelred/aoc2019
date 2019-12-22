@@ -1,5 +1,8 @@
 package aoc2019.program
 
+import aoc2019.parser.Parser
+import aoc2019.parser.Parser.long
+
 import scala.collection.mutable
 
 class Program(initialMemory: Seq[Long]) {
@@ -56,5 +59,9 @@ class Program(initialMemory: Seq[Long]) {
 
   private val noInput = () => throw new Exception("No input")
   private val noAction: (() => Long) => Unit = next => next()
+}
+
+object Program {
+  implicit val parser: Parser[Program] = long.separatedBy(",") >> { new Program(_) }
 }
 

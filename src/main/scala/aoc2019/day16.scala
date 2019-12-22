@@ -4,6 +4,8 @@ import aoc2019.parser.Parser
 
 object day16 {
 
+  implicit val parser: Parser[Seq[Int]] = Parser.digit.repeat
+
   object Solution extends Solution[Seq[Int]] {
 
     def part1: String = fft(input)(100).take(8).mkString
@@ -16,11 +18,9 @@ object day16 {
     }
   }
 
-  def shortPhase(signal: Seq[Int]): Seq[Int] = signal.scanRight(0)(_ + _).dropRight(1).map(_ % 10)
-
-  implicit val parser: Parser[Seq[Int]] = Parser.digit.repeat
-
   private val Pattern = LazyList.continually(Seq(0, 1, 0, -1)).flatten
+
+  def shortPhase(signal: Seq[Int]): Seq[Int] = signal.scanRight(0)(_ + _).dropRight(1).map(_ % 10)
 
   def fft(signal: Seq[Int]): LazyList[Seq[Int]] = LazyList.iterate(signal)(phase)
 

@@ -1,5 +1,8 @@
 package aoc2019
 
+import aoc2019.parser.Parser
+import aoc2019.parser.Parser._
+
 sealed trait Direction {
   def shift(pos: Vec2): Vec2
   def clockwise: Direction
@@ -8,6 +11,12 @@ sealed trait Direction {
 
 object Direction {
   def all: Set[Direction] = Set(Up(), Down(), Left(), Right())
+
+  val parser: Parser[Direction] =
+    "U" >> { _ => Up   ()} |
+    "D" >> { _ => Down ()} |
+    "L" >> { _ => Left ()} |
+    "R" >> { _ => Right()}
 }
 
 

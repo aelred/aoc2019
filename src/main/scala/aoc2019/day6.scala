@@ -10,7 +10,7 @@ object day6 {
 
   case class Orbit(planet: String, satellite: String)
 
-  object Solution extends Solution[Seq[Orbit]] {
+  object Solution extends Solution[List[Orbit]] {
 
     def part1: Int = {
       val orbitMap = input.map(orbit => orbit.satellite -> orbit.planet).toMap

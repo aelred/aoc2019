@@ -1,8 +1,6 @@
 package aoc2019
 
-import aoc2019.parser.Parser
-
-object day4 extends Solution[Range]()(Parser.range) {
+object day4 extends Solution[Range] {
 
   def part1: Int = {
     val range = input

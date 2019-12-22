@@ -9,9 +9,34 @@ object day10 {
 
   case class Asteroids(asteroids: Seq[Boolean])
 
-  object Asteroids {
-    implicit val parser: Parser[Asteroids] =
-      ("#" >> (_ => true) | "." >> (_ => false)).repeat >> (Asteroids(_))
+  implicit val parser: Parser[Asteroids] = ("#" >> (_ => true) | "." >> (_ => false)).repeat >> Asteroids
+
+  object Solution extends Solution[Seq[Asteroids]] {
+
+    def part1: Int = {
+      val belt = AsteroidBelt(input)
+
+      belt.asteroids.map(belt.visibleAsteroids(_).size).max
+    }
+
+    def part2: Int = {
+      var belt = AsteroidBelt(input)
+      val asteroidsDestroyed = mutable.Buffer[Vec2]()
+
+      val station = belt.asteroids.maxBy(belt.visibleAsteroids(_).size)
+
+      while (belt.asteroids.size > 1) {
+        val visibleAsteroids = belt.visibleAsteroids(station)
+
+        belt = belt.without(visibleAsteroids)
+
+        asteroidsDestroyed ++= visibleAsteroids.toSeq.sortBy(asteroid => (asteroid - station).angle)
+      }
+
+      val asteroid = asteroidsDestroyed(199)
+
+      asteroid.x * 100 + asteroid.y
+    }
   }
 
   class AsteroidBelt(val asteroids: Set[Vec2]) {
@@ -56,34 +81,6 @@ object day10 {
       } yield Vec2(x, y)
 
       new AsteroidBelt(positions.toSet)
-    }
-  }
-
-  object Solution extends Solution[Seq[Asteroids]] {
-
-    def part1: Int = {
-      val belt = AsteroidBelt(input)
-
-      belt.asteroids.map(belt.visibleAsteroids(_).size).max
-    }
-
-    def part2: Int = {
-      var belt = AsteroidBelt(input)
-      val asteroidsDestroyed = mutable.Buffer[Vec2]()
-
-      val station = belt.asteroids.maxBy(belt.visibleAsteroids(_).size)
-
-      while (belt.asteroids.size > 1) {
-        val visibleAsteroids = belt.visibleAsteroids(station)
-
-        belt = belt.without(visibleAsteroids)
-
-        asteroidsDestroyed ++= visibleAsteroids.toSeq.sortBy(asteroid => (asteroid - station).angle)
-      }
-
-      val asteroid = asteroidsDestroyed(199)
-
-      asteroid.x * 100 + asteroid.y
     }
   }
 }

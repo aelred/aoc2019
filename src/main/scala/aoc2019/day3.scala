@@ -54,12 +54,7 @@ object day3 {
     locations.toSet
   }
 
-  val direction: Parser[Direction] =
-    "U" >> { _ => Up   ()} |
-    "D" >> { _ => Down ()} |
-    "L" >> { _ => Left ()} |
-    "R" >> { _ => Right()}
+  val wirePath: Parser[Seq[WirePath]] = (Direction.parser ~ int).map(WirePath.tupled).separatedBy(",")
 
-  val wirePath: Parser[Seq[WirePath]] = (direction ~ int).map(WirePath.tupled).separatedBy(",")
   implicit val parser: Parser[(Seq[WirePath], Seq[WirePath])] = (wirePath <~ "\n") ~ wirePath
 }
